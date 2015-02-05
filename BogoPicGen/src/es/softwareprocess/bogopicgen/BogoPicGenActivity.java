@@ -42,6 +42,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.InputFilter.LengthFilter;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -57,7 +58,7 @@ public class BogoPicGenActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-
+ 
 		setBogoPic();
 
 		ImageButton button = (ImageButton) findViewById(R.id.TakeAPhoto);
@@ -91,12 +92,16 @@ public class BogoPicGenActivity extends Activity {
 	private void setBogoPic() {
 		// TODO: Show a toast with message "Generating Photo"
 		
+		Toast.makeText(this, "Generating photo", Toast.LENGTH_SHORT).show();
 		
 		// TODO: Get a reference to the image button
 		
+		ImageButton preview = (ImageButton) findViewById(R.id.TakeAPhoto);
 		
 		// Generate a bogopic
 		ourBMP = BogoPicGen.generateBitmap(400, 400);
+		
+		preview.setImageBitmap(ourBMP);
 		
 		// TODO: Assign the bogopic to the button with setImageBitmap
 		
@@ -113,13 +118,21 @@ public class BogoPicGenActivity extends Activity {
 			if (intent.getExtras() != null) {
 				// TODO: If cancelled, show a toast, set result to RESULT_CANCELED, finish and return 
 				
-				
-				// If accepted save the picture
-				File intentPicture = getPicturePath(intent);
-				saveBMP(intentPicture, ourBMP);
-				
-				// TODO: set result to RESULT_OK
-				
+				if(cancel == true) {
+					setResult(RESULT_CANCELED);
+					Toast.makeText(this, "canceled :(", Toast.LENGTH_LONG).show();
+					
+				} else {
+
+					// If accepted save the picture
+					// TODO: set result to RESULT_OK
+					
+					File intentPicture = getPicturePath(intent);
+					saveBMP(intentPicture, ourBMP);
+					setResult(RESULT_OK);
+					
+				}
+			
 			} else {
 				Toast.makeText(this, "Photo Cancelled: No Reciever?",
 						Toast.LENGTH_LONG).show();
